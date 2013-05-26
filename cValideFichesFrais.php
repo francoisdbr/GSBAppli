@@ -1,52 +1,53 @@
 <?php
 /** 
- * Script de contr??le et d'affichage du cas d'utilisation "Consulter une fiche de frais"
+ * Script de contrôle et d'affichage du cas d'utilisation "Consulter une fiche de frais"
  * @package default
  * @todo  RAS
  */
 $repInclude = './include/';
 require($repInclude . "_init.inc.php");
 
-// page inaccessible si visiteur non connect??
+// page inaccessible si visiteur non connecté
 if ( ! estVisiteurConnecte() ) {
     header("Location: cSeConnecter.php");  
 }
 require($repInclude . "_entete.inc.html");
 require($repInclude . "_sommaire.inc.php");
 
-// acquisition des entr??es lors des validations de formulaire
+// acquisition des entrées lors des validations de formulaire
 $etape=lireDonneePost("etape","");
-// aquisition pour l'??tape validerMois et validerConsult
+// aquisition pour l'étape validerMois et validerConsult
 $visiteurSaisi = lireDonneePost("lstVisiteurs", "");
 // acquisition pour l'étape validerConsult
 $moisSaisi=lireDonneePost("lstMois", "");
-// acquisition pour l'??tape validerForfait
+// acquisition pour l'étape validerForfait
 $tabQteEltsForfait=lireDonneePost("txtEltsForfait", "");
-// acquisition pour l'??tape validerRefusLigneHF
+// acquisition pour l'étape validerRefusLigneHF
 $idLigneHF = lireDonneePost("idLigneHF", "");
-// acquisition pour l'??tape validerDetails
+// acquisition pour l'étape validerDetails
 $justificatifs = lireDonneePost("txtJustificatifsFicheFrais", "");
 //var_dump($_POST);
 
-if ($etape != "validerVisiteur" && $etape != "validerMois" && $etape != "validerConsult" && $etape!="validerForfait" && $etape!="validerRefusLigneHF" 
+if ($etape != "validerVisiteur" && $etape != "validerMois" && $etape != "validerConsult" 
+    && $etape!="validerForfait" && $etape!="validerRefusLigneHF" 
     && $etape != "validerReportLigneHF" && $etape != "validerFicheFrais") {
-    // si autre valeur, on consid??re que c'est le d??but du traitement
+    // si autre valeur, on considère que c'est le début du traitement
     $etape = "validerVisiteur";        
 } 
   
-// structure de d??cision sur les diff??rentes ??tapes du cas d'utilisation
+// structure de décision sur les différentes étapes du cas d'utilisation
 if ( $etape != "validerVisiteur" && $etape != "validerMois" ) {              
     if ($etape == "validerConsult") {
         $tabFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisSaisi, $visiteurSaisi);
     }
     elseif ($etape == "validerForfait") {
-        // l'utilisateur valide les ??l??ments forfaitis??s         
-        // v??rification des quantit??s des ??l??ments forfaitis??s
+        // l'utilisateur valide les éléments forfaitisés         
+        // vérification des quantités des éléments forfaitisés
         $ok = verifierEntiersPositifs($tabQteEltsForfait);      
         if (!$ok) {
-            ajouterErreur($tabErreurs, "Chaque quantit?? doit ??tre renseign??e et num??rique positive.");
+            ajouterErreur($tabErreurs, "Chaque quantité doit être renseignée et numérique positive.");
         } 
-        else { // mise ?? jour des quantit??s des ??l??ments forfaitis??s
+        else { // mise à jour des quantités des éléments forfaitisés
             modifierEltsForfait($idConnexion, $moisSaisi, $visiteurSaisi, $tabQteEltsForfait);
             modifierJustificatifsFicheFrais($idConnexion, $moisSaisi, $visiteurSaisi, $justificatifs);
         }
@@ -71,7 +72,7 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois" ) {
     $montantValide = $montantForfait + $montantHorsForfait;
     modifierMontantFicheFrais($idConnexion, $visiteurSaisi, $moisSaisi, $montantValide);
 }
-else { // on ne fait rien, ??tape non pr??vue 
+else { // on ne fait rien, étape non prévue 
 }
 
 ?>
@@ -96,7 +97,7 @@ if (nbErreurs($tabErreurs) > 0) {
     } 
     elseif ($etape == "validerForfait" || $etape == "validerFicheFrais") {
 ?>
-    <p class="info">Les modifications de la fiche de frais ont bien ??t?? enregistr??es</p>        
+    <p class="info">Les modifications de la fiche de frais ont bien été enregistrées</p>        
 <?php        
 }
     // cloture de toutes les fiches de frais du mois en cours s'il existe des fiches non cloturees
@@ -109,8 +110,10 @@ if (obtenirSiFicheFraisCreee($idConnexion)) {
             <input type="hidden" name="etape" value="validerMois" />            
             <p>
                 <label for="lstVisiteurs">Visiteur : </label>
-                <select id="lstVisiteurs" name="lstVisiteurs" onChange="Submit('name')" title="S??lectionnez le visiteur souhait?? pour la fiche de frais">
-                    <option disabled <?php if ($visiteurSaisi == "") { echo ("selected"); } ?>>Choix du visiteur</option>
+                <select id="lstVisiteurs" name="lstVisiteurs" onChange="Submit('name')" 
+                        title="Sélectionnez le visiteur souhaité pour la fiche de frais">
+                    <option disabled <?php if ($visiteurSaisi == "") { echo ("selected"); } ?>>
+                        Choix du visiteur</option>
                 <?php
                     $req = obtenirReqIdentiteVisiteurs();
                     $idJeuVisiteurs = mysql_query($req, $idConnexion);
@@ -120,7 +123,8 @@ if (obtenirSiFicheFraisCreee($idConnexion)) {
                         $nomVisiteur = $lgVisiteur["nom"];
                         $prenomVisiteur = $lgVisiteur["prenom"];
                         ?>   
-                    <option value="<?php echo($idVisiteur); ?>" <?php if ($idVisiteur == $visiteurSaisi) { echo ("selected"); } ?>><?php echo ($nomVisiteur." ".$prenomVisiteur); ?></option>
+                    <option value="<?php echo($idVisiteur); ?>" <?php if ($idVisiteur == $visiteurSaisi) 
+                        { echo ("selected"); } ?>><?php echo ($nomVisiteur." ".$prenomVisiteur); ?></option>
                         <?php
                         $lgVisiteur = mysql_fetch_assoc($idJeuVisiteurs);        
                     }
@@ -139,7 +143,8 @@ if ($etape != "validerVisiteur") {
             <input type="hidden" name="lstVisiteurs" value="<?php echo $visiteurSaisi; ?>" />
             <p>
                 <label for="lstMois">Mois : </label>
-                <select id="lstMois" name="lstMois" onChange="Submit('month')" title="S??lectionnez le mois souhait?? pour la fiche de frais">
+                <select id="lstMois" name="lstMois" onChange="Submit('month')" 
+                        title="Sélectionnez le mois souhaité pour la fiche de frais">
                     <option disabled <?php if ($moisSaisi == "") { echo ("selected"); } ?>>Choisir le mois</option>
                     <?php
                 // on propose tous les mois pour lesquels le visiteur séléctionné a une fiche non remboursée
@@ -151,7 +156,8 @@ if ($etape != "validerVisiteur") {
                     $noMois = intval(substr($mois, 4, 2));
                     $annee = intval(substr($mois, 0, 4));
                 ?>    
-                    <option value="<?php echo $mois; ?>" <?php if ($mois == $moisSaisi) { echo ("selected"); } ?>><?php echo obtenirLibelleMois($noMois) . " " . $annee; ?></option>
+                    <option value="<?php echo $mois; ?>" <?php if ($mois == $moisSaisi) 
+                        { echo ("selected"); } ?>><?php echo obtenirLibelleMois($noMois) . " " . $annee; ?></option>
                 <?php
                     $lgMois = mysql_fetch_assoc($idJeuMois);        
                 }
@@ -168,8 +174,8 @@ if ($etape != "validerVisiteur") {
         
 <?php 
 
-// demande et affichage des diff??rents ??l??ments (forfaitis??s et non forfaitis??s)
-// de la fiche de frais demand??e
+// demande et affichage des différents éléments (forfaitisés et non forfaitisés)
+// de la fiche de frais demandée
 if ( $etape != "validerVisiteur" && $etape != "validerMois") {
 ?>
 
@@ -179,33 +185,31 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois") {
             <input type="hidden" name="lstVisiteurs" value="<?php echo $visiteurSaisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisSaisi; ?>" />
             <fieldset>
-                <legend>D??tails de la fiche de frais</legend>
+                <legend>Détails de la fiche de frais</legend>
                 <?php 
-                // demande de la requ??te pour obtenir la liste des ??l??ments 
-                // sur la fiche de frais du visiteur pour le mois concern??
-          //      $req = obtenirReqEltsForfaitFicheFrais($moisSaisi, $visiteurSaisi);
-           //     $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
-          //      echo mysql_error($idConnexion);
+                // demande de la requête pour obtenir la liste des éléments 
+                // sur la fiche de frais du visiteur pour le mois concerné
                 $lgJeuRes = obtenirDetailFicheFrais($idConnexion, $moisSaisi, $visiteurSaisi);
                 ?>
                 <p>
                     <label for="montantValide">* Montant validé : </label>
-                        <input disabled type="text" size="10" id="montantValide" title="Montant total des frais" value="<?php echo ($lgJeuRes["montantValide"]); ?>" />
+                        <input disabled type="text" size="10" id="montantValide" 
+                               title="Montant total des frais" value="<?php echo ($lgJeuRes["montantValide"]); ?>" />
                 </p>
                 <p>
-                    <label for="nbJustificatifs">* Nombre de justificatifs re??us : </label>
+                    <label for="nbJustificatifs">* Nombre de justificatifs reçus : </label>
                     <input type="text" id="nbJusitifcatifs" 
                            name="txtJustificatifsFicheFrais" 
                            size="10" maxlength="5"
-                           title="Entrez le nombre de justificatifs re??us" 
+                           title="Entrez le nombre de justificatifs reçus" 
                            value="<?php echo ($lgJeuRes["nbJustificatifs"]); ?>" />
                 </p>
             </fieldset>
             <fieldset>
-                <legend>El??ments forfaitis??s</legend>
+                <legend>Eléments forfaitisés</legend>
                 <?php 
-                // demande de la requ??te pour obtenir la liste des ??l??ments 
-                // forfaitis??s du visiteur connect?? pour le mois demand??
+                // demande de la requête pour obtenir la liste des éléments 
+                // forfaitisés du visiteur connecté pour le mois demandé
                 $req = obtenirReqEltsForfaitFicheFrais($moisSaisi, $visiteurSaisi);
                 $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
                 echo mysql_error($idConnexion);
@@ -220,7 +224,7 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois") {
                     <input type="text" id="<?php echo $idFraisForfait ?>" 
                            name="txtEltsForfait[<?php echo $idFraisForfait ?>]" 
                            size="10" maxlength="5"
-                           title="Entrez la quantit?? de l'??l??ment forfaitis??" 
+                           title="Entrez la quantité de l'élément forfaitisé" 
                            value="<?php echo $quantite; ?>" />
                 </p>
                 <?php        
@@ -230,29 +234,29 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois") {
                 ?>
                 <p>
                 <input id="ok" type="submit" value="Valider" size="20" 
-                       title="Enregistrer les nouvelles valeurs des ??l??ments forfaitis??s" />
+                       title="Enregistrer les nouvelles valeurs des éléments forfaitisés" />
                 </p> 
             </fieldset>
         </form>
             <fieldset>
-                <legend>El??ments hors forfait</legend>
+                <legend>Eléments hors forfait</legend>
                 <table class="listeLegere">
                     <tr>
                         <th class="date">Date</th>
-                        <th class="libelle">Libell??</th>
+                        <th class="libelle">Libellé</th>
                         <th class="montant">Montant</th>  
                         <th class="action">&nbsp;</th> 
                         <th class="action">&nbsp;</th>
                     </tr>
            
 <?php
-    // demande de la requ??te pour obtenir la liste des ??l??ments hors
-    // forfait du visiteur connect?? pour le mois demand??
+    // demande de la requête pour obtenir la liste des éléments hors
+    // forfait du visiteur connecté pour le mois demandé
     $req = obtenirReqEltsHorsForfaitFicheFrais($moisSaisi, $visiteurSaisi);
     $idJeuEltsHorsForfait = mysql_query($req, $idConnexion);
     $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);
           
-    // parcours des frais hors forfait du visiteur connect??
+    // parcours des frais hors forfait du visiteur connecté
     while ( is_array($lgEltHorsForfait) ) {
         $idForm = $lgEltHorsForfait["id"];
 ?>

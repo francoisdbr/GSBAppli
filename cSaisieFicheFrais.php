@@ -60,7 +60,8 @@
 ?>
   <!-- Division principale -->
   <div id="contenu">
-      <h2>Renseigner ma fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($mois,4,2))) . " " . substr($mois,0,4); ?></h2>
+      <h2>Renseigner ma fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($mois,4,2))) . " " . 
+              substr($mois,0,4); ?></h2>
 <?php
   if ($etape == "validerSaisie" || $etape == "validerAjoutLigneHF" || $etape == "validerSuppressionLigneHF") {
       if (nbErreurs($tabErreurs) > 0) {
@@ -169,7 +170,8 @@
             <p>
               <label for="txtMontantHF">* Montant : </label>
               <input type="text" id="txtMontantHF" name="txtMontantHF" size="12" maxlength="10" 
-                     title="Entrez le montant des frais (le point est le séparateur décimal)" value="<?php echo $montantHF; ?>" />
+                     title="Entrez le montant des frais (le point est le séparateur décimal)" 
+                     value="<?php echo $montantHF; ?>" />
             </p>
           </fieldset>
       </div>

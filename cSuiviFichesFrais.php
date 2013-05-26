@@ -1,13 +1,13 @@
 <?php
 /** 
- * Script de contr?le et d'affichage du cas d'utilisation "Consulter une fiche de frais"
+ * Script de contrôle et d'affichage du cas d'utilisation "Consulter une fiche de frais"
  * @package default
  * @todo  RAS
  */
 $repInclude = './include/';
 require($repInclude . "_init.inc.php");
 
-// page inaccessible si visiteur non connect?
+// page inaccessible si visiteur non connecté
 if ( ! estVisiteurConnecte() ) {
     header("Location: cSeConnecter.php");  
 }
@@ -21,7 +21,7 @@ $visiteurSaisi = substr(lireDonneePost("lstMoisVisiteur", ""), 7);
 if ($etape == "validerPaiement") {
     modifierEtatFicheFrais($idConnexion, $moisSaisi, $visiteurSaisi,"RB");
     ?>
-    <p class="info">Les modifications de la fiche de frais ont bien ??t?? enregistr??es</p>
+    <p class="info">Les modifications de la fiche de frais ont bien été enregistrées</p>
     <?php
 }
 ?>
@@ -39,14 +39,14 @@ if ($etape == "validerPaiement") {
         <form id="paiement" action="" method="post">
             <input type="hidden" name="etape" value="validerPaiement">
             <fieldset>
-                <legend>Fiches de frais valid?es ? mettre en paiement</legend>
+                <legend>Fiches de frais validées à mettre en paiement</legend>
                 <table class="listeLegere">
                     <thead>
                         <tr>
-                            <th class="center" rowspan="2" val>D?tails</th>
-                            <th class="center" rowspan="2">Nom/prenom du visiteur m?dical</th>
+                            <th class="center" rowspan="2" val>Détails</th>
+                            <th class="center" rowspan="2">Nom/prenom du visiteur médical</th>
                             <th class="center" rowspan="2">Mois/année</th>
-                            <th class="center" colspan="3">R?sum? de la fiche de frais</th>    
+                            <th class="center" colspan="3">Résumé de la fiche de frais</th>    
                             <th class="center" rowspan="2">Mise en paiement</th>
                         </tr>
                         <tr>
@@ -57,7 +57,7 @@ if ($etape == "validerPaiement") {
                     </thead>
                     <tbody>
                         <?php 
-                        // r?cup?ration des fiches de frais valid?es ? mettre en paiement
+                        // récupération des fiches de frais validées à mettre en paiement
                         $req = obtenirReqFicheFraisCloturees();
                         $idJeuFicheFraisCloturees = mysql_query($req, $idConnexion);
                         while ($lgFicheFraiscloturees = mysql_fetch_assoc($idJeuFicheFraisCloturees)) {                                                   
@@ -74,7 +74,8 @@ if ($etape == "validerPaiement") {
                             }
                             ?>
                         <tr>
-                            <form id="lien<?php echo ($mois.$idVisiteur); ?>" method="post" action="cConsultFichesFrais.php">
+                            <form id="lien<?php echo ($mois.$idVisiteur); ?>" method="post" 
+                                  action="cConsultFichesFrais.php">
                                 <td><a href="#" onClick="Go('lien<?php echo ($mois.$idVisiteur); ?>')">Lien</a></td>
                                 <input type="hidden" name="etape" value="validerConsult">
                                 <input type="hidden" name="lstMois" value="<?php echo $mois; ?>">
@@ -85,7 +86,8 @@ if ($etape == "validerPaiement") {
                             <td><?php echo $montantForfait; ?></td>
                             <td><?php echo $montantHorsForfait; ?></td>
                             <td><?php echo $total; ?></td>
-                            <td><button class="large"type="submit" form="paiement" name ="lstMoisVisiteur" value="<?php echo ($mois." ".$idVisiteur); ?>">Mise en paiement</button></td>
+                            <td><button class="large"type="submit" form="paiement" name ="lstMoisVisiteur" 
+                                        value="<?php echo ($mois." ".$idVisiteur); ?>">Mise en paiement</button></td>
                         </tr>
                             <?php
                         }

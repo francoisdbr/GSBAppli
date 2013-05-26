@@ -53,7 +53,8 @@
       </p>
       <p>
         <label for="txtMdp" accesskey="m">* Mot de passe : </label>
-        <input type="password" id="txtMdp" name="txtMdp" maxlength="8" size="15" value=""  title="Entrez votre mot de passe"/>
+        <input type="password" id="txtMdp" name="txtMdp" maxlength="8" size="15" value=""  
+               title="Entrez votre mot de passe"/>
       </p>
       </div>
       <div class="piedForm">

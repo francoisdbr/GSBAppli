@@ -272,6 +272,12 @@ function verifierLigneFraisHF($date, $libelle, $montant, &$tabErrs) {
     }
 }
 
+/**
+ * Retourne la date (année/mois) avec un mois en plus à une date mise en paramètre
+ * 
+ * @param string $unMois mois à traiter
+ * @return string date avec un mois en plus
+ */
 function convertirMoisSuivant ($unMois) {
     $mois = substr($unMois, 4);
     $annee = substr($unMois, 0, 4);
