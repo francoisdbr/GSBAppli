@@ -266,7 +266,7 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois") {
                         <td><?php echo $lgEltHorsForfait["montant"] ; ?></td>
                         <td>
                             <form action="" method="post" id="supprimer<?php echo $idForm; ?>">
-                                <a href ="#" onClick="SubmitAlert('supprimer<?php echo $idForm; ?>', 'Voulez-vous vraiment reporter cette ligne de frais hors forfait au mois suivant ?')"
+                                <a href ="#" onClick="SubmitAlert('supprimer<?php echo $idForm; ?>', 'Voulez-vous vraiment refuser cette ligne de frais hors forfait au mois suivant ?')"
                                    title="Refuser la ligne de frais hors forfait">Refuser</a>
                                 <input type="hidden" name="idLigneHF" value="<?php echo $idForm; ?>" />
                                 <input type="hidden" name="lstMois" value="<?php echo $moisSaisi; ?>" />
@@ -276,7 +276,7 @@ if ( $etape != "validerVisiteur" && $etape != "validerMois") {
                         </td>
                         <td>
                             <form action="" method="post" id="reporter<?php echo $idForm; ?>">
-                                <a href ="#" onClick="SubmitAlert('reporter<?php echo $idForm; ?>', 'Voulez-vous vraiment refuser cette ligne de frais hors forfait ?')"
+                                <a href ="#" onClick="SubmitAlert('reporter<?php echo $idForm; ?>', 'Voulez-vous vraiment reporter cette ligne de frais hors forfait ?')"
                                    title="Reporter la ligne de frais hors forfait">Reporter</a>
                                 <input type="hidden" name="idLigneHF" value="<?php echo $idForm; ?>" />
                                 <input type="hidden" name="lstMois" value="<?php echo $moisSaisi; ?>" />

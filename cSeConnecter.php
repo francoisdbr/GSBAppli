@@ -14,7 +14,7 @@
       // acquisition des données envoyées, ici login et mot de passe
       $login = lireDonneePost("txtLogin");
       $mdp = md5(lireDonneePost("txtMdp"));  
-      echo $mdp;
+      //echo $mdp;
       $lgUser = verifierInfosConnexion($idConnexion, $login, $mdp) ;
       // si l'id utilisateur a été trouvé, donc informations fournies sous forme de tableau
       if ( is_array($lgUser) ) { 

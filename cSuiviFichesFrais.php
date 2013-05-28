@@ -14,9 +14,10 @@ if ( ! estVisiteurConnecte() ) {
 require($repInclude . "_entete.inc.html");
 require($repInclude . "_sommaire.inc.php");
 
-$etape = lireDonneePost("etape", "");
+$etape = lireDonneePost("paiement", "");
 $moisSaisi = substr(lireDonneePost("lstMoisVisiteur", ""), 0, 6);
 $visiteurSaisi = substr(lireDonneePost("lstMoisVisiteur", ""), 7);
+//var_dump($_POST);
 
 if ($etape == "validerPaiement") {
     modifierEtatFicheFrais($idConnexion, $moisSaisi, $visiteurSaisi,"RB");
@@ -37,7 +38,7 @@ if ($etape == "validerPaiement") {
     <h2>Suivi des paiements</h2>
     <div>
         <form id="paiement" action="" method="post">
-            <input type="hidden" name="etape" value="validerPaiement">
+            <input type="hidden" name="paiement" value="validerPaiement">
             <fieldset>
                 <legend>Fiches de frais validées à mettre en paiement</legend>
                 <table class="listeLegere">
@@ -87,7 +88,7 @@ if ($etape == "validerPaiement") {
                             <td><?php echo $montantHorsForfait; ?></td>
                             <td><?php echo $total; ?></td>
                             <td><button class="large"type="submit" form="paiement" name ="lstMoisVisiteur" 
-                                        value="<?php echo ($mois." ".$idVisiteur); ?>">Mise en paiement</button></td>
+                                        value="<?php echo ($mois." ".$idVisiteur); ?>">Mettre en paiement</button></td>
                         </tr>
                             <?php
                         }

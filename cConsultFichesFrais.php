@@ -19,8 +19,9 @@
   
   // acquisition des données entrées, ici le numéro de mois et l'étape du traitement
   $moisSaisi=lireDonneePost("lstMois", "");
-  $idUser = lireDonneePost("lstVisiteur", obtenirIdUserConnecte());
+  $idUtilisateur = lireDonneePost("lstVisiteur", obtenirIdUserConnecte());
   $etape= lireDonneePost("etape","");
+  //var_dump($_POST);
 
   if ($etape != "demanderConsult" && $etape != "validerConsult" && $etape != "validerPdf") {
       // si autre valeur, on considère que c'est le début du traitement
@@ -29,18 +30,19 @@
   if ($etape == "validerConsult" || $etape == "validerPdf") { // l'utilisateur valide ses nouvelles données
 
       // vérification de l'existence de la fiche de frais pour le mois demandé      
-      $existeFicheFrais = existeFicheFrais($idConnexion, $moisSaisi, $idUser);
+      $existeFicheFrais = existeFicheFrais($idConnexion, $moisSaisi, $idUtilisateur);
       // si elle n'existe pas, on la crée avec les frais forfaitisés à 0
       if ( !$existeFicheFrais ) {
           ajouterErreur($tabErreurs, "Le mois demandé est invalide");
       }
       else {
           // récupération des données sur la fiche de frais demandée
-          $tabFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisSaisi, $idUser);
+          $tabFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisSaisi, $idUtilisateur);
+          //var_dump($idUser);
           if ($etape == "validerPdf") {
-              $identiteVisiteur = obtenirDetailVisiteur($idConnexion, $idUser);
-              $fileName = "pdf/Fiche_de_Frais_".obtenirLibelleMois(intval(substr($moisSaisi,4,2))) . "_" . 
-                          substr($moisSaisi,0,4)."_". $identiteVisiteur["nom"] ."_". $identiteVisiteur["prenom"] .".pdf";
+              $identiteVisiteur = obtenirDetailVisiteur($idConnexion, $idUtilisateur);
+              $fileName = utf8_decode("pdf/Fiche_de_Frais_".obtenirLibelleMois(intval(substr($moisSaisi,4,2))) . "_" . 
+                          substr($moisSaisi,0,4)."_". $identiteVisiteur["nom"] ."_". $identiteVisiteur["prenom"] .".pdf");
               $file = $_SERVER['DOCUMENT_ROOT']."GSB_Appli/".$fileName;
               creerPdf($idConnexion, $identiteVisiteur, $moisSaisi, $fileName, $tabFicheFrais, $idConnexion);   
               header('Content-Type: application/pdf');
@@ -68,7 +70,7 @@ if ($etape == "demanderConsult") {
         <select id="lstMois" name="lstMois" title="Sélectionnez le mois souhaité pour la fiche de frais">
             <?php
                 // on propose tous les mois pour lesquels le visiteur a une fiche de frais
-                $req = obtenirReqMoisFicheFrais($idUser);
+                $req = obtenirReqMoisFicheFrais($idUtilisateur);
                 $idJeuMois = mysql_query($req, $idConnexion);
                 $lgMois = mysql_fetch_assoc($idJeuMois);
                 while ( is_array($lgMois) ) {
@@ -109,6 +111,7 @@ if ($etape == "demanderConsult") {
             echo toStringErreurs($tabErreurs) ;
         }
         else {
+            //var_dump($idUser);
             
 ?>
     <h3>Fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($moisSaisi,4,2))) . " " . 
@@ -122,7 +125,8 @@ if ($etape == "demanderConsult") {
 <?php          
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés du visiteur connecté pour le mois demandé
-            $req = obtenirReqEltsForfaitFicheFrais($moisSaisi, $idUser);
+            $req = obtenirReqEltsForfaitFicheFrais($moisSaisi, $idUtilisateur);
+            //var_dump($idUser);
             $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
             echo mysql_error($idConnexion);
             $lgEltForfait = mysql_fetch_assoc($idJeuEltsFraisForfait);
@@ -174,7 +178,7 @@ if ($etape == "demanderConsult") {
 <?php          
             // demande de la requête pour obtenir la liste des éléments hors
             // forfait du visiteur connecté pour le mois demandé
-            $req = obtenirReqEltsHorsForfaitFicheFrais($moisSaisi, $idUser);
+            $req = obtenirReqEltsHorsForfaitFicheFrais($moisSaisi, $idUtilisateur);
             $idJeuEltsHorsForfait = mysql_query($req, $idConnexion);
             $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);
             
@@ -198,7 +202,7 @@ if ($etape == "demanderConsult") {
     <p>
         <form action="" method="post">
             <input type="hidden" name="etape" value="validerPdf" />
-            <input type="hidden" name="lstVisiteur" value="<?php echo $idUser; ?>" />
+            <input type="hidden" name="lstVisiteur" value="<?php echo $idUtilisateur; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisSaisi; ?>" /> 
             <input type="submit" value="Télécharger un PDF" size="20" title="Télécharger un PDF concernant la fiche de frais électionnée" />
         </form>

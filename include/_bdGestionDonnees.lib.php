@@ -208,8 +208,8 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  * @return string texte de la requête select
  */                                                 
 function obtenirReqMoisFicheFrais($unIdVisiteur) {
-    $req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='"
-            . $unIdVisiteur . "' order by fichefrais.mois desc ";
+    $req = "select FicheFrais.mois as mois from  FicheFrais where FicheFrais.idvisiteur ='"
+            . $unIdVisiteur . "' order by FicheFrais.mois desc ";
     return $req ;
 }  
                   
@@ -374,8 +374,8 @@ function obtenirReqIdentiteVisiteurs() {
  */
 function obtenirReqMoisFicheFraisEnCours($idVisiteur) {
     $req = "select distinct FicheFrais.mois as mois from  FicheFrais 
-           where idVisiteur = '".$idVisiteur."' and idEtat != 'RB'
-           order by fichefrais.mois desc";
+           where idVisiteur = '".$idVisiteur."' and idEtat = 'CL' 
+           order by FicheFrais.mois desc";
     return $req ;
 }
 
@@ -426,7 +426,7 @@ function modifierEtatClotureFicheFrais($idCnx) {
 }
 
 /**
- * Retourne une requête contenant les informations sur les fiches de frais cloturées de 
+ * Retourne une requête contenant les informations sur les fiches de frais validées de 
  * l'utilisateur loggé
  * 
  * @return string
@@ -435,7 +435,7 @@ function obtenirReqFicheFraisCloturees () {
     $requete = "select distinct FicheFrais.idVisiteur as idVisiteur, mois, montantValide, nom, prenom
                 from FicheFrais
                 join Utilisateur on FicheFrais.idVisiteur = Utilisateur.id
-                where idEtat='CL';";
+                where idEtat='VA';";
     return $requete;        
 }
 
