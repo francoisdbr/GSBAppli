@@ -358,7 +358,7 @@ function modifierEtatFicheFrais($idCnx, $unMois, $unIdVisiteur, $unEtat) {
 /**
  * Retourne une requête donnant les identités des visiteurs médicaux par ordre alphabétique
  * 
- * @return string
+ * @return array
  */
 function obtenirReqIdentiteVisiteurs() {
     $req = "select id, nom, prenom from Utilisateur where metier='V' order by nom asc";
@@ -373,6 +373,7 @@ function obtenirReqIdentiteVisiteurs() {
  * @return string
  */
 function obtenirReqMoisFicheFraisEnCours($idVisiteur) {
+    $idVisiteur = filtrerChainePourBD($idVisiteur);
     $req = "select distinct FicheFrais.mois as mois from  FicheFrais 
            where idVisiteur = '".$idVisiteur."' and idEtat = 'CL' 
            order by FicheFrais.mois desc";
@@ -387,6 +388,7 @@ function obtenirReqMoisFicheFraisEnCours($idVisiteur) {
  * @param string $unIdLigneHF id de la ligne hors forfait
  */
 function modifierRefuserHorsForfait($idCnx, $unIdLigneHF) {
+    $unIdLigneHF = filtrerChainePourBD($unIdLigneHF);
     $reqLibelle = "select LigneFraisHorsForfait.libelle from LigneFraisHorsForfait where id='".
                   $unIdLigneHF."'";
     $idLibelle = mysql_query($reqLibelle, $idCnx);
@@ -410,6 +412,9 @@ function modifierRefuserHorsForfait($idCnx, $unIdLigneHF) {
  * @param string $nbJustificatifs nouveau nombre de justificatifs
  */
 function modifierJustificatifsFicheFrais($idCnx, $unMois, $unIdVisiteur, $nbJustificatifs) {
+    $unMois = filtrerChainePourBD($unMois);
+    $unIdVisiteur = filtrerChainePourBD($unIdVisiteur);
+    $nbJustificatifs = filtrerChainePourBD($nbJustificatifs);
     $requete = "update FicheFrais set nbJustificatifs = '" . $nbJustificatifs . 
                "' where idVisiteur ='" .$unIdVisiteur . "' and mois = '". $unMois . "'";
     mysql_query($requete, $idCnx);
@@ -448,6 +453,8 @@ function obtenirReqFicheFraisCloturees () {
  * @return float total des frais forfaitisés
  */
 function obtenirMontantForfait ($idVisiteur, $mois, $idCnx) {
+    $idVisiteur = filtrerChainePourBD($idVisiteur);
+    $mois = filtrerChainePourBD($mois);
     $total = 0;
     $req = "select FraisForfait.id as typeFrais, montant, quantite, coefficient
            from LigneFraisForfait inner join FraisForfait on LigneFraisForfait.idFraisForfait = FraisForfait.id 
@@ -476,6 +483,8 @@ function obtenirMontantForfait ($idVisiteur, $mois, $idCnx) {
  * @return float total des frais hors forfait
  */
 function obtenirMontantHorsForfait ($idVisiteur, $mois, $idCnx) {
+    $idVisiteur = filtrerChainePourBD($idVisiteur);
+    $mois = filtrerChainePourBD($mois);
     $total = 0;
     $req = "select montant, libelle from LigneFraisHorsForfait
            where idVisiteur = '".$idVisiteur."' and mois = '".$mois."';";
@@ -514,8 +523,12 @@ function obtenirSiFicheFraisCreee ($idCnx) {
  * @param string $unVisiteur id visiteur
  * @param string $unMois mois sous la forme aaaamm
  * @param string $unMontant nouveau montant
+ * @return void
  */
 function modifierMontantFicheFrais ($idCnx, $unVisiteur, $unMois, $unMontant) {
+    $unMois = filtrerChainePourBD($unMois);
+    $unMontant = filtrerChainePourBD($unMontant);
+    $unVisiteur = filtrerChainePourBD($unVisiteur);
     $requete = "update FicheFrais set montantValide = '" . $unMontant . 
                "' where idVisiteur ='" .$unVisiteur . "' and mois = '". $unMois . "'";
     mysql_query($requete, $idCnx);
@@ -527,8 +540,11 @@ function modifierMontantFicheFrais ($idCnx, $unVisiteur, $unMois, $unMontant) {
  * @param resource $idCnx identifiant de connexion
  * @param string $idLigne id de la ligne hors forfait
  * @param string $unMois mois sous la forme aaaamm
+ * @return void
  */
 function modifierDateLigneHorsForfait ($idCnx, $idLigne, $unMois){
+    $idLigne = filtrerChainePourBD($idLigne);
+    $unMois = filtrerChainePourBD($unMois);
     $req = "UPDATE LigneFraisHorsForfait SET mois = '". $unMois."' WHERE id = '".$idLigne."'";
     mysql_query($req, $idCnx);
 }
